@@ -1,6 +1,5 @@
 syntax = "proto3";
-
-option go_package ="./;sq_user_blacklist_proto";
+package sq_user_blacklist_proto;
 // protoc -I ./sq_user_blacklist_proto --go_out=plugins=grpc:./sq_user_blacklist_proto ./sq_user_blacklist_proto/sq_user_blacklist_gen.proto
 service SqUserBlacklistService {
 

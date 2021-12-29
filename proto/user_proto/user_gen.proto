@@ -1,6 +1,5 @@
 syntax = "proto3";
-
-option go_package ="./;user_proto";
+package user_proto;
 // protoc -I ./user_proto --go_out=plugins=grpc:./user_proto ./user_proto/user_gen.proto
 service UserService {
 

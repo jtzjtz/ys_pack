@@ -1,6 +1,5 @@
 syntax = "proto3";
-
-option go_package ="./;workflow_proto";
+package workflow_proto;
 // protoc -I ./workflow_proto --go_out=plugins=grpc:./workflow_proto ./workflow_proto/workflow_gen.proto
 service WorkflowService {
 
