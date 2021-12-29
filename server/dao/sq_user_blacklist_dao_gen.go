@@ -2,9 +2,9 @@ package dao
 
 import (
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"github.com/jtzjtz/kit/database"
 	"github.com/jtzjtz/ys_pack/entity"
+	"gorm.io/gorm"
 )
 
 type SqUserBlacklistDAO struct {
