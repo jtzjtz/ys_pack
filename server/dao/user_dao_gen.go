@@ -69,7 +69,7 @@ func (instance *UserDAO) GetByUserID(userid int, isWriteDB bool, options ...data
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(user).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(user).RowsAffected == 0 {
 		return nil
 	}
 	return user
@@ -91,7 +91,7 @@ func (instance *UserDAO) First(condition []database.SqlCondition, isWriteDB bool
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(user).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(user).RowsAffected == 0 {
 		return nil
 	}
 
@@ -114,7 +114,7 @@ func (instance *UserDAO) FirstBySql(sqlQuery string, isWriteDB bool, options ...
 			}
 		}
 	}
-	if db.Where(sqlQuery).First(user).RecordNotFound() {
+	if db.Where(sqlQuery).First(user).RowsAffected == 0 {
 		return nil
 	}
 
@@ -122,7 +122,7 @@ func (instance *UserDAO) FirstBySql(sqlQuery string, isWriteDB bool, options ...
 }
 
 func (instance *UserDAO) Count(condition []database.SqlCondition, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -130,11 +130,11 @@ func (instance *UserDAO) Count(condition []database.SqlCondition, isWriteDB bool
 	}
 	instance.buildQuery(db, condition).Model(&entity.User{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *UserDAO) CountBySql(sqlQuery string, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -142,7 +142,7 @@ func (instance *UserDAO) CountBySql(sqlQuery string, isWriteDB bool) int {
 	}
 	db.Where(sqlQuery).Model(&entity.User{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *UserDAO) GetList(conditions []database.SqlCondition, isWriteDB bool, options ...database.SqlOptions) []entity.User {

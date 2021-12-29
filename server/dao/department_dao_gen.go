@@ -69,7 +69,7 @@ func (instance *DepartmentDAO) GetByDeptID(deptid int, isWriteDB bool, options .
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(department).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(department).RowsAffected == 0 {
 		return nil
 	}
 	return department
@@ -91,7 +91,7 @@ func (instance *DepartmentDAO) First(condition []database.SqlCondition, isWriteD
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(department).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(department).RowsAffected == 0 {
 		return nil
 	}
 
@@ -114,7 +114,7 @@ func (instance *DepartmentDAO) FirstBySql(sqlQuery string, isWriteDB bool, optio
 			}
 		}
 	}
-	if db.Where(sqlQuery).First(department).RecordNotFound() {
+	if db.Where(sqlQuery).First(department).RowsAffected == 0 {
 		return nil
 	}
 
@@ -122,7 +122,7 @@ func (instance *DepartmentDAO) FirstBySql(sqlQuery string, isWriteDB bool, optio
 }
 
 func (instance *DepartmentDAO) Count(condition []database.SqlCondition, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -130,11 +130,11 @@ func (instance *DepartmentDAO) Count(condition []database.SqlCondition, isWriteD
 	}
 	instance.buildQuery(db, condition).Model(&entity.Department{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *DepartmentDAO) CountBySql(sqlQuery string, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -142,7 +142,7 @@ func (instance *DepartmentDAO) CountBySql(sqlQuery string, isWriteDB bool) int {
 	}
 	db.Where(sqlQuery).Model(&entity.Department{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *DepartmentDAO) GetList(conditions []database.SqlCondition, isWriteDB bool, options ...database.SqlOptions) []entity.Department {

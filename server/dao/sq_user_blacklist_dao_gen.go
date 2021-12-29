@@ -69,7 +69,7 @@ func (instance *SqUserBlacklistDAO) GetByID(id int, isWriteDB bool, options ...d
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(squserblacklist).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(squserblacklist).RowsAffected == 0 {
 		return nil
 	}
 	return squserblacklist
@@ -91,7 +91,7 @@ func (instance *SqUserBlacklistDAO) First(condition []database.SqlCondition, isW
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(squserblacklist).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(squserblacklist).RowsAffected == 0 {
 		return nil
 	}
 
@@ -114,7 +114,7 @@ func (instance *SqUserBlacklistDAO) FirstBySql(sqlQuery string, isWriteDB bool, 
 			}
 		}
 	}
-	if db.Where(sqlQuery).First(squserblacklist).RecordNotFound() {
+	if db.Where(sqlQuery).First(squserblacklist).RowsAffected == 0 {
 		return nil
 	}
 
@@ -122,7 +122,7 @@ func (instance *SqUserBlacklistDAO) FirstBySql(sqlQuery string, isWriteDB bool, 
 }
 
 func (instance *SqUserBlacklistDAO) Count(condition []database.SqlCondition, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -130,11 +130,11 @@ func (instance *SqUserBlacklistDAO) Count(condition []database.SqlCondition, isW
 	}
 	instance.buildQuery(db, condition).Model(&entity.SqUserBlacklist{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *SqUserBlacklistDAO) CountBySql(sqlQuery string, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -142,7 +142,7 @@ func (instance *SqUserBlacklistDAO) CountBySql(sqlQuery string, isWriteDB bool) 
 	}
 	db.Where(sqlQuery).Model(&entity.SqUserBlacklist{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *SqUserBlacklistDAO) GetList(conditions []database.SqlCondition, isWriteDB bool, options ...database.SqlOptions) []entity.SqUserBlacklist {

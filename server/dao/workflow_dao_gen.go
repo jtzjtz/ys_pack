@@ -69,7 +69,7 @@ func (instance *WorkflowDAO) GetByWorkFlowID(workflowid int, isWriteDB bool, opt
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(workflow).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(workflow).RowsAffected == 0 {
 		return nil
 	}
 	return workflow
@@ -91,7 +91,7 @@ func (instance *WorkflowDAO) First(condition []database.SqlCondition, isWriteDB 
 			}
 		}
 	}
-	if instance.buildQuery(db, condition).First(workflow).RecordNotFound() {
+	if instance.buildQuery(db, condition).First(workflow).RowsAffected == 0 {
 		return nil
 	}
 
@@ -114,7 +114,7 @@ func (instance *WorkflowDAO) FirstBySql(sqlQuery string, isWriteDB bool, options
 			}
 		}
 	}
-	if db.Where(sqlQuery).First(workflow).RecordNotFound() {
+	if db.Where(sqlQuery).First(workflow).RowsAffected == 0 {
 		return nil
 	}
 
@@ -122,7 +122,7 @@ func (instance *WorkflowDAO) FirstBySql(sqlQuery string, isWriteDB bool, options
 }
 
 func (instance *WorkflowDAO) Count(condition []database.SqlCondition, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -130,11 +130,11 @@ func (instance *WorkflowDAO) Count(condition []database.SqlCondition, isWriteDB 
 	}
 	instance.buildQuery(db, condition).Model(&entity.Workflow{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *WorkflowDAO) CountBySql(sqlQuery string, isWriteDB bool) int {
-	var c int
+	var c int64
 	db := SqlDBRead
 
 	if isWriteDB {
@@ -142,7 +142,7 @@ func (instance *WorkflowDAO) CountBySql(sqlQuery string, isWriteDB bool) int {
 	}
 	db.Where(sqlQuery).Model(&entity.Workflow{}).Count(&c)
 
-	return c
+	return int(c)
 }
 
 func (instance *WorkflowDAO) GetList(conditions []database.SqlCondition, isWriteDB bool, options ...database.SqlOptions) []entity.Workflow {
