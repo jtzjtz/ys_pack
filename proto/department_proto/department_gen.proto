@@ -1,4 +1,5 @@
 syntax = "proto3";
+option go_package ="./;department_proto";
 package department_proto;
 // protoc -I ./department_proto --go_out=plugins=grpc:./department_proto ./department_proto/department_gen.proto
 service DepartmentService {
