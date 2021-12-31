@@ -1,0 +1,123 @@
+syntax = "proto3";
+option go_package ="./;hys_city_proto";
+package hys_city_proto;
+// protoc -I ./hys_city_proto --go_out=plugins=grpc:./hys_city_proto ./hys_city_proto/hys_city_gen.proto
+service HysCityService {
+
+    //创建
+    rpc CreateHysCity(HysCity) returns (EntityResult) {
+    }
+    //1. 按照查询条件更新，查询可以按照实体查询和sql查询，二选一，sql查询优先使用，
+    // 2.如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明，如果要更新的是默认值 请使用update_empty_fields 大写字段数组
+    rpc UpdateHysCity (UpdateAndCondition) returns (Result) {
+    }
+    //1. 按照条件查询当个实体，查询可以按照实体查询和sql查询，二选一，sql查询优先使用，
+    // 2.如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明
+    // 3.增加读写库查询判断
+    rpc GetHysCity (Query) returns (EntityResult) {
+    }
+    //1. 按照条件查询列表，查询可以按照实体查询和sql查询，二选一，sql查询优先使用，
+    // 2.如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明
+    // 3.增加读写库查询判断
+    rpc GetHysCityList (Query) returns (ListResult) {
+    }
+    //1. 按照条件删除，查询可以按照实体查询和sql查询，二选一，sql查询优先使用，
+    // 2.如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明
+    rpc DeleteHysCity (Query) returns (Result) {
+    }
+    //1. 按照条件查询，查询可以按照实体查询和sql查询，二选一，sql查询优先使用，
+    // 2.如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明
+    // 3.增加读写库查询判断
+    rpc GetHysCityPageList (PageQuery) returns (PageResult) {
+    }
+    //1. 按照条件查询数量，数量值为result.data，查询可以按照实体查询和sql查询，二选一，sql查询优先使用，
+    // 2.如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明
+    // 3.增加读写库查询判断
+    rpc GetHysCityCount (Query) returns (Result) {
+    }
+}
+
+//主从库
+enum DB {
+    //读库
+    READ = 0;
+    //写库
+    WRITE = 1;
+}
+
+message HysCity {
+    int32 id = 1;
+    int32 parentid = 2;
+    string cityname = 3;
+    int32 regiontype = 4;
+    int32 agencyid = 5;
+    
+}
+
+message Result {
+    int32 code = 1;
+    string msg = 2;
+    string data = 3;
+}
+
+// 按条件更新数据
+message UpdateAndCondition {
+    // 更新数据，如果filed对应为空值，则需要在 update_empty_fields 中声明
+    HysCity entity = 1;
+    //查询条件
+    Query query = 2;
+    // 需要赋空值的字段 大写字段数组
+    repeated string update_empty_fields = 3;
+
+}
+
+//按条件查询
+message Query {
+    // 按照实体查询 （和sql查询二选一，sql查询优先使用），如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明
+    HysCity entity_query = 1;
+    // 按照sql查询（和实体查询二选一，sql查询优先使用），如果field对应为空值，则需要在 query_empty_fields 大写字段数组 中声明
+    // "id=1 and status in(3,4) and createtime >'2018' "
+    string sql_query = 2;
+
+    // 用空值当检索条件的字段 大写字段数组 
+    repeated string query_empty_fields = 3;
+    //排序条件 key值为数据库字段 ["id":"desc","create_time":asc"]
+    map<string, string> order_by = 4;
+    //是否查询主库，默认不读取 DB.READ
+    DB db = 5;
+    //制定select查询的字段，如 "id,username,age"
+    string select_field=6;
+}
+
+//分页查询
+message PageQuery {
+    //查询条件
+    Query query = 1;
+    int32 page = 2;
+    int32 page_num = 3;
+}
+
+message EntityResult {
+    int32 code = 1;
+    string msg = 2;
+    HysCity data = 3;
+}
+
+message ListResult {
+    int32 code = 1;
+    string msg = 2;
+    repeated HysCity data = 3;
+}
+
+message PageResult {
+    int32 code = 1;
+    string msg = 2;
+    HysCityPageData data = 3;
+}
+
+message HysCityPageData {
+    int32 current_page = 1;
+    int32 count = 2;
+    repeated HysCity list = 3;
+}
+
